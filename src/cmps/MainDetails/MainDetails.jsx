@@ -109,7 +109,7 @@ export function MainDetails() {
                         <h2>{city.location.LocalizedName}</h2>
                         <div>
                             <h4 style={{ transform: isFahrenheit ? "translateX(0)" : "translateX(-100px)", maxWidth: isFahrenheit ? "100%" : "0" }} >{city.forecasts[0].temperature.Maximum.Value + " °F"}</h4>
-                            <h4 style={{ transform: isFahrenheit ? "translateX(100px)" : "translateX(0)", marginLeft: '10px', maxWidth: isFahrenheit ? "0" : "100%" }} >{calcToCelsius(city.forecasts[0]) + " °C"}</h4>
+                            <h4 style={{ transform: isFahrenheit ? "translateX(100px)" : "translateX(0)", marginLeft: '40px', maxWidth: isFahrenheit ? "0" : "100%" }} >{calcToCelsius(city.forecasts[0]) + " °C"}</h4>
                         </div>
                     </section>
                     <div className="like-sec" onClick={() => tuggleFavorite()}><Button variant="text">{liked ? "remove from favorites" : "add to favorites"}</Button><FontAwesomeIcon icon={faHeart} className="heart" style={fillHeart(liked)} /></div>
