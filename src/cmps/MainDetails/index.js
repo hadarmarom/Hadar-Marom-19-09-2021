@@ -1,0 +1,1 @@
+export { MainDetails } from './MainDetails'

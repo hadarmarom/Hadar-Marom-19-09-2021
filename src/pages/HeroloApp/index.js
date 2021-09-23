@@ -1,0 +1,1 @@
+export { HeroloApp } from './HeroloApp'

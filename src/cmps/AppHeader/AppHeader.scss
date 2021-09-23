@@ -1,0 +1,36 @@
+@import "../../mixins";
+
+.app-header {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 10vh;
+    width: 100%;
+    > :first-child {
+        margin-right: 50px;
+    }
+    .herolo-span {
+        font-family: "Prompt", sans-serif;
+        text-transform: uppercase;
+    }
+    .app-header-con {
+        color: inherit;
+        margin-bottom: 6px;
+        span {
+            font-size: 20px;
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+    }
+}
+
+@include mobile {
+    .app-header {
+        &> :nth-child(2) {
+            display: none;
+        }
+    }
+}

@@ -1,0 +1,214 @@
+@import "../../mixins";
+
+.functions-sec {
+    height: 13vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-transform: capitalize;
+    small {
+        color: red;
+    }
+    input:not(:focus) {
+        color: blue;
+    }
+    input:focus {
+        color: blue;
+    }
+    * > ::before {
+        border-bottom: 1px blue solid !important;
+    }
+    label {
+        color: blue !important;
+    }
+    &.dark {
+        input:not(:focus) {
+            color: white;
+        }
+        input:focus {
+            color: white;
+        }
+        * > ::after {
+            border: 1px white solid !important;
+        }
+        * > ::before {
+            border-bottom: 1px white solid !important;
+        }
+        label {
+            color: white !important;
+        }
+    }
+}
+.curr-city-view {
+    * {
+        font-family: "Prompt", sans-serif !important;
+    }
+    &.light {
+        background-color: red;
+        color: red;
+        h2 {
+            color: black;
+            font-weight: 700;
+            text-shadow: 0 0 1px white;
+        }
+    }
+
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: column;
+    box-shadow: rosybrown 1px;
+    background: url("../../imgs/hero.jpg") 50% no-repeat, linear-gradient(#878787, #ebebeb);
+    box-shadow: 0 0 12px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    background-size: cover;
+    border-radius: 20px;
+    height: 75vh;
+    color: white;
+    width: 100%;
+
+    .snackbar {
+        min-width: 250px;
+        margin-left: -125px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 2px;
+        padding: 16px;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        bottom: 30px;
+        font-size: 17px;
+        -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    }
+    .curr-city-top-sec {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 30px;
+        &.dark {
+            button {
+                color: white;
+                text-shadow: 0 0 1px black;
+            }
+            color: white;
+            font-weight: 700;
+            text-shadow: 0 0 1px black;
+        }
+        &.light {
+            button {
+                color: black;
+                font-weight: 600;
+
+                text-shadow: 0 0 1px white;
+            }
+            color: black;
+            text-shadow: 0 0 1px white;
+        }
+        > * {
+            font-family: "Prompt", sans-serif !important;
+        }
+        > :first-child {
+            overflow: hidden;
+            white-space: nowrap;
+            height: 105px;
+            :nth-child(2) {
+                display: flex;
+                flex-direction: row;
+                transition: 0.3s;
+                * {
+                    width: 100%;
+                }
+            }
+        }
+        .like-sec {
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            align-content: center;
+            transition: 0.3s;
+            color: black !important;
+            text-shadow: 0 0 1px white;
+            .fa-heart {
+                transition: all 0.3s ease 0s;
+                :hover {
+                    color: red !important;
+                    transition: 0.3s;
+                    cursor: pointer;
+                }
+                width: 30px !important;
+                height: 30px !important;
+                color: gray;
+            }
+        }
+    }
+    .days-list {
+        display: flex;
+        flex-direction: row;
+        list-style-type: none;
+        justify-content: space-evenly;
+        flex-wrap: wrap;
+    }
+}
+
+@keyframes fadein {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+@keyframes fadeout {
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
+}
+//--------- for other browser --------
+@-webkit-keyframes fadein {
+    from {
+        bottom: 0;
+        opacity: 0;
+    }
+    to {
+        bottom: 30px;
+        opacity: 1;
+    }
+}
+@-webkit-keyframes fadeout {
+    from {
+        bottom: 30px;
+        opacity: 1;
+    }
+    to {
+        bottom: 0;
+        opacity: 0;
+    }
+}
+
+//--------- responsive! ---------
+@include narrow {
+    .functions-sec {
+        flex-direction: column;
+        height: 23vh;
+        margin-bottom: 2vh;
+    }
+    .curr-city-view {
+        height: 100vh;
+    }
+}
+@include mobile {
+    .curr-city-view {
+        .like-sec Button {
+            display: none;
+        }
+    }
+}
