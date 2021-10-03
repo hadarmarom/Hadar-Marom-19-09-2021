@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/Hadar-Marom-19-09-2021/static/css/main.2a98148f.chunk.css",
-    "main.js": "/Hadar-Marom-19-09-2021/static/js/main.0a135e5c.chunk.js",
-    "main.js.map": "/Hadar-Marom-19-09-2021/static/js/main.0a135e5c.chunk.js.map",
+    "main.js": "/Hadar-Marom-19-09-2021/static/js/main.35ab3e68.chunk.js",
+    "main.js.map": "/Hadar-Marom-19-09-2021/static/js/main.35ab3e68.chunk.js.map",
     "runtime-main.js": "/Hadar-Marom-19-09-2021/static/js/runtime-main.6163eeb1.js",
     "runtime-main.js.map": "/Hadar-Marom-19-09-2021/static/js/runtime-main.6163eeb1.js.map",
     "static/js/2.f5290b4f.chunk.js": "/Hadar-Marom-19-09-2021/static/js/2.f5290b4f.chunk.js",
@@ -18,6 +18,6 @@
     "static/js/runtime-main.6163eeb1.js",
     "static/js/2.f5290b4f.chunk.js",
     "static/css/main.2a98148f.chunk.css",
-    "static/js/main.0a135e5c.chunk.js"
+    "static/js/main.35ab3e68.chunk.js"
   ]
 }
