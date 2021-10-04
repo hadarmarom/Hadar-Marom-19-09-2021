@@ -1,27 +1,26 @@
 import './MainDetails.scss'
 import weatherService from '../../services/weatherService'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { removeFromFavorites, addToFavorites, loadLocation } from '../../store/actions/weatherActions'
-import { DaysList } from '../DaysList/DaysList'
+import { removeFromFavorites, addToFavorites, autocomplete, loadLocation } from '../../store/actions/weatherActions'
+import { DaysList } from '../../cmps/DaysList/DaysList'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart } from '@fortawesome/free-solid-svg-icons';
-import CustomizedSwitches from '../DegreesSwitch'
-import Box from '@mui/material/Box';
+import CustomizedSwitches from '../../cmps/DegreesSwitch'
 import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
 import Button from '@mui/material/Button';
-import axios from 'axios'
-
 
 export function MainDetails() {
     const dispatch = useDispatch()
     const [searchTerm, setSearchTerm] = useState("");
-    const debouncedInput = useDebounce(searchTerm, 1300);
     const currCity = useSelector(state => state.weatherReducer.currCity)
     const favorites = useSelector(state => state.weatherReducer.favorites)
     const isDarkMode = useSelector(state => state.weatherReducer.isDarkMode)
 
     const [disableSearch, setDisableSearch] = useState(false);
+    const [autoCompleteOpt, setAutoCompleteOpt] = useState([]);
+    const [pressedCity, setPressedCity] = useState('');
     const [isFahrenheit, setIsFahrenheit] = useState(true)
     const [isErrModal, setIsErrModal] = useState(false);
     const [city, setCity] = useState(currCity);
@@ -31,22 +30,35 @@ export function MainDetails() {
         setCity(currCity);
         checkIfLiked()
     }, [currCity])
+
     useEffect(() => {
         checkIfLiked()
     }, [])
+
     useEffect(async () => {
-        if (debouncedInput) {
-            const err = await dispatch(loadLocation(debouncedInput))
-            if (err) {
+        if (searchTerm) {
+            if (pressedCity === searchTerm) return
+            const auto = await weatherService.autocomplete(searchTerm)
+            if (!auto) {
                 setIsErrModal(true)
                 setTimeout(() => {
                     setIsErrModal(false)
                 }, 3000);
             }
-        } else {
-            setCity(currCity)
+            else setAutoCompleteOpt(auto)
         }
-    }, [debouncedInput]);
+    }, [searchTerm]);
+
+    useEffect(async () => {
+        const err = await dispatch(loadLocation(searchTerm))
+        if (err) {
+            setIsErrModal(true)
+            setTimeout(() => {
+                setIsErrModal(false)
+            }, 3000);
+        }
+        setAutoCompleteOpt([])
+    }, [pressedCity]);
 
     const checkIfLiked = () => {
         (favorites.some((fav) => fav.location.Key === city.location.Key)) ? setLiked(true) : setLiked(false)
@@ -60,13 +72,13 @@ export function MainDetails() {
         setLiked(true)
         dispatch(addToFavorites(currCity))
     }
-    const typeLetters = (res) => {
-        let isEnglish = /^[A-Za-z\s]+$/.test(res.target.value);
-        if (isEnglish || res.target.value === '') {
+
+    const typeLetters = (value) => {
+        let isEnglish = /^[A-Za-z\s]+$/.test(value);
+        if (isEnglish || value === '') {
             setDisableSearch(false)
-            setSearchTerm(res.target.value)
-        }
-        else {
+            setSearchTerm(value)
+        } else {
             setDisableSearch(true)
         }
     }
@@ -78,8 +90,8 @@ export function MainDetails() {
     const success = async (pos) => {
         var crd = pos.coords;
         const myCity = await weatherService.getCityByGeoloc(crd.latitude, crd.longitude)
-
-        setSearchTerm(myCity)
+        dispatch(loadLocation(searchTerm))
+        setPressedCity(myCity)
     }
     const error = (err) => {
         console.warn(`ERROR(${err.code}): ${err.message}`);
@@ -96,10 +108,13 @@ export function MainDetails() {
     return (
         <>
             <section className={isDarkMode ? 'dark functions-sec ' : 'functions-sec '} style={isDarkMode ? { color: 'white' } : { color: 'blue' }}>
-                <Button variant="outlined" onClick={() => getGeoLoc()} style={isDarkMode ? { color: 'white', border: '1px solid white' } : { color: 'blue' }}>Get My Location!</Button>
-                <Box component="form" style={{ color: 'white !important' }} sx={{ '& > :not(style)': { m: 1, width: '25ch' }, }} noValidate autoComplete="off">
-                    <TextField style={{ marginBottom: '22px' }} id="standard-basic" label="Enter City Name Here..." variant="standard" onChange={(e) => typeLetters(e)} />
-                </Box>
+                <Button variant="outlined" style={{ color: 'white !important' }} onClick={() => getGeoLoc()} style={isDarkMode ? { color: 'white', border: '1px solid white' } : { color: 'blue' }}>Get My Location!</Button>
+                <div className="input-container">
+                    <Autocomplete clear-on-blur="true" style={{ color: 'white !important' }} value={pressedCity} onChange={(e, newValue) => {
+                        setAutoCompleteOpt([])
+                        return setPressedCity(newValue)
+                    }} inputValue={searchTerm} onInputChange={(e, newInputValue) => typeLetters(newInputValue)} id="clear-on-blur" options={autoCompleteOpt} sx={{ width: 300 }} renderInput={(params) => <TextField variant="standard" {...params} label="Enter City Name Here..." />} />
+                </div>
                 {disableSearch && <small>english letters only!</small>}
                 <CustomizedSwitches style={{ backgroundColor: 'red !important', transition: ' 0.3 !impirtant' }} setIsFahrenheit={setIsFahrenheit} isFahrenheit={isFahrenheit} defaultChecked />
             </section>
@@ -121,19 +136,4 @@ export function MainDetails() {
         </>
     )
 
-}
-
-// Hook
-function useDebounce(value, delay) {
-    const [debouncedValue, setDebouncedValue] = useState(value);
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            setDebouncedValue(value);
-        }, delay);
-        return () => {
-            clearTimeout(handler);
-        };
-    },
-        [value, delay]);
-    return debouncedValue;
 }

@@ -54,7 +54,7 @@ export default function CustomizedSwitches({ setIsFahrenheit, isFahrenheit }) {
     return (
         <Stack direction="row" spacing={1} alignItems="center">
             <Typography>Celsius</Typography>
-            <AntSwitch defaultChecked onChange={handleChange} inputProps={{ 'aria-label': 'ant design' }} />
+            <AntSwitch defaultChecked onChange={() => handleChange()} inputProps={{ 'aria-label': 'ant design' }} />
             <Typography>Fahrenheit</Typography>
         </Stack>
     );

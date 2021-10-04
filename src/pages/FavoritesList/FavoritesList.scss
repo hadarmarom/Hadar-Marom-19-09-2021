@@ -1,3 +1,4 @@
+@import "../../mixins";
 .favorites-list {
     display: flex;
     justify-content: space-evenly;
@@ -50,3 +51,9 @@
         }
     }
 }
+@include narrow {
+    .favorites-list {
+        height: 125vh;
+    }
+}
+

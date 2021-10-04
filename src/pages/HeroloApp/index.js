@@ -1,1 +1,0 @@
-export { HeroloApp } from './HeroloApp'

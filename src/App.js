@@ -1,12 +1,12 @@
 
 import './App.scss';
-import { HeroloApp } from './pages/HeroloApp'
 import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { loadLocation } from './store/actions/weatherActions';
 import { AppHeader } from './cmps/AppHeader/AppHeader';
 import { FavoritesList } from './pages/FavoritesList/FavoritesList';
+import { MainDetails } from './pages/MainDetails';
 
 function App() {
   const dispatch = useDispatch()
@@ -25,7 +25,7 @@ function App() {
         <AppHeader></AppHeader>
         <Switch>
           <Route component={FavoritesList} path='/favorites' />
-          <Route component={HeroloApp} path='/' />
+          <Route component={MainDetails} path='/' />
         </Switch>
       </div>
     </Router >

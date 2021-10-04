@@ -1,7 +1,7 @@
 import axios from "axios";
 import { storageService } from "./async-storage.service"
 
-const KEY = 'IJwMfkRhJBE72sL8zTV0uw9AUZ14qmZc'
+const KEY = 'UGeEGKUNPZP49XINFWUymRwWwW6xAZWG'
 
 export default {
     queryLocation,
@@ -10,17 +10,16 @@ export default {
     getCityByGeoloc,
     loadFavorites,
     addToFavorites,
-    removeFromFavorites
+    removeFromFavorites,
+    autocomplete
 }
 
 async function queryLocation(loc = 'tel aviv') {
     try {
         const citys = await storageService.query(`locationResults_${loc}`);
         if (citys?.Key) {
-            // console.log('queryLocation from storage!');
             return Promise.resolve(citys);
         }
-        // console.log('api queryLocation...');
         return axios.get(`https://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=%09${KEY}&q=${loc}`)
             .then(res => {
                 if (res.data.length) {
@@ -42,10 +41,8 @@ async function queryWeather(cityKey = '215854') {
     try {
         const weather = await storageService.query(`weatherResults_${cityKey}`);
         if (Object.keys(weather).includes('WeatherText')) {
-            // console.log('queryWeather from storage!');
             return Promise.resolve(weather);
         }
-        // console.log('api queryWeather...');
         return axios.get(`https://dataservice.accuweather.com/currentconditions/v1/${cityKey}?apikey=${KEY}&details=true`)
             .then(res => {
                 if (res.data.length) {
@@ -64,12 +61,32 @@ async function queryWeather(cityKey = '215854') {
         console.log('err in queryWeather functin:', err)
     }
 }
+async function autocomplete(res) {
+    try {
+        if (res === '') return
+        const weather = await storageService.query(`autoResults_${res}`);
+        if (weather?.Key) {
+            console.log('autocomplete from storage!');
+            return Promise.resolve(weather);
+        }
+        return axios.get(`http://dataservice.accuweather.com/locations/v1/cities/autocomplete?apikey=${KEY}&q=${res}`)
+            .then(res => {
+                if (res.data.length) {
+                    return res.data.map((cname) => cname.LocalizedName)
+                }
+            })
+            .catch(err => {
+                console.log('Service got Error:', err);
+            })
+    } catch (err) {
+        console.log('err in queryWeather functin:', err)
+    }
+}
 async function query5Days(cityKey = '215854') {
     try {
         var forecastArr = []
         const forecasts = await storageService.query(`5DaysResults_${cityKey}`);
         if (Object.keys(forecasts).includes('DailyForecasts')) {
-            // console.log('query5Days from storage!');
             forecastArr = forecasts.DailyForecasts.map((day) => {
                 return {
                     dayTimestamp: day.EpochDate,
@@ -78,7 +95,6 @@ async function query5Days(cityKey = '215854') {
             })
             return Promise.resolve(forecastArr);
         }
-        // console.log('api query5Days...');
         return axios.get(`https://dataservice.accuweather.com/forecasts/v1/daily/5day/${cityKey}?apikey=${KEY}&details=true`)
             .then(res => {
                 storageService._save(`5DaysResults_${cityKey}`, res.data);
@@ -98,8 +114,7 @@ async function query5Days(cityKey = '215854') {
 }
 async function getCityByGeoloc(lat, lon) {
     try {
-        // console.log('api getCityByGeoloc...');
-        return axios.get(`http://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=${KEY}&q=${lat}%2C${lon}&toplevel=false`)
+        return axios.get(`https://dataservice.accuweather.com/locations/v1/cities/geoposition/search?apikey=${KEY}&q=${lat}%2C${lon}&toplevel=false`)
             .then(res => {
                 return res.data.AdministrativeArea.LocalizedName
             })
